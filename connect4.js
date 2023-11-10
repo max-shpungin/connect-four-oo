@@ -17,6 +17,8 @@ class Game {
     // (board[5][0] would be the bottom-left spot on the board)
     this.board = [];
     this.currPlayer = 1;
+    this.htmlBoard = document.getElementById("board")
+    this.start();
   }
 
   /** makeBoard: fill in global `board`:
@@ -32,7 +34,14 @@ class Game {
   /** makeHtmlBoard: make HTML table and row of column tops. */
 
   makeHtmlBoard() {
-    const htmlBoard = document.getElementById("board");
+    debugger;
+    const gameBoard = document.querySelector('#game');
+    const tableRow = document.querySelector('tr');
+    if (tableRow !== null) {
+      this.htmlBoard.remove();
+      gameBoard.append(this.htmlBoard);
+    }
+
 
     // TODO: add comment for this code
     const top = document.createElement("tr");
@@ -41,16 +50,16 @@ class Game {
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement("td");
       headCell.setAttribute("id", `top-${x}`);
-      headCell.addEventListener("click", handleClick);
+      headCell.addEventListener("click", this.handleClick.bind(this));
       top.append(headCell);
     }
-    htmlBoard.append(top);
+    this.htmlBoard.append(top);
 
     // dynamically creates the main part of html board
     // uses HEIGHT to create table rows
     // uses WIDTH to create table cells for each row
     for (let y = 0; y < this.height; y++) {
-      this.row = document.createElement('tr');
+      const row = document.createElement('tr');
 
       for (let x = 0; x < this.width; x++) {
         const cell = document.createElement('td');
@@ -58,7 +67,7 @@ class Game {
         row.append(cell);
       }
 
-      htmlBoard.append(row);
+      this.htmlBoard.append(row);
     }
 
   }
@@ -161,12 +170,14 @@ class Game {
   /** Start game. */
 
   start() {
-    makeBoard();
-    makeHtmlBoard();
+    this.makeBoard();
+    this.makeHtmlBoard();
   }
 
 }
 
-const connectFour = new Game(6, 7);
-connectFour.start();
+new Game(6,7);
+
+// const connectFour = new Game(6, 7);
+// connectFour.start();
 //start();?
