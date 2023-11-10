@@ -15,7 +15,7 @@ class Game {
     // (board[5][0] would be the bottom-left spot on the board)
     this.board = [];
     this.currPlayer = 1;
-    this.htmlBoard = document.getElementById("board")
+    this.htmlBoard = document.getElementById("board");
     this.start();
   }
 
@@ -42,7 +42,7 @@ class Game {
     if (tableRow !== null) {
       this.htmlBoard.remove();
       this.htmlBoard = document.createElement('table');
-      this.htmlBoard.setAttribute('id','board');
+      this.htmlBoard.setAttribute('id', 'board');
       gameBoard.append(this.htmlBoard);
     }
 
@@ -107,9 +107,11 @@ class Game {
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
   checkForWin() {
-    console.log('chekforwin this:',this);
-    function _win(cells) {
-      console.log('_win this',this);
+    console.log('chekforwin this:', this);
+
+    //const _win = (cells)=>{ << this also would have worked!
+    function _win(cells){
+      console.log('_win this', this);
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
@@ -123,6 +125,7 @@ class Game {
           this.board[y][x] === this.currPlayer
       );
     }
+    //const _win = _winReal.bind(this); This would have been the bind solution
 
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -135,7 +138,11 @@ class Game {
 
         // find winner (only checking each win-possibility as needed)
         // preserve this context for inner function _win
-        if (_win.call(this,horiz) || _win.call(this, vert) || _win.call(this,diagDR) || _win.call(this,diagDL)) {
+        if (_win.call(this, horiz) ||
+        //_win.bind(this)(horiz) ||
+          _win.call(this, vert) ||
+          _win.call(this, diagDR) ||
+          _win.call(this, diagDL)) {
           return true;
         }
       }
@@ -182,4 +189,4 @@ class Game {
 
 }
 
-new Game(6,7);
+new Game(6, 7);
