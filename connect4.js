@@ -1,16 +1,14 @@
 "use strict";
-/** Connect Four
+/** Connect Four Class
  *
  * Player 1 and 2 alternate turns. On each turn, a piece is dropped down a
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
-/** Connect four class TODO: the rest of whatever it says here */
 
 class Game {
 
-  /**Define the game board size and starting player
-   * FIXME: is this even needed?(the docstring)*/
+  /**Define the game board size and starting player, start the game */
   constructor(width = 7, height = 6) {
     this.width = width;
     this.height = height;
@@ -37,13 +35,18 @@ class Game {
     debugger;
     const gameBoard = document.querySelector('#game');
     const tableRow = document.querySelector('tr');
+
+    //Check if previous games exist
+    // If exists, remove game board and recreates
+    //  re-appends game board
     if (tableRow !== null) {
       this.htmlBoard.remove();
+      this.htmlBoard = document.createElement('table');
+      this.htmlBoard.setAttribute('id','board');
       gameBoard.append(this.htmlBoard);
     }
 
-
-    // TODO: add comment for this code
+    // populate table rows
     const top = document.createElement("tr");
     top.setAttribute("id", "column-top");
 
@@ -90,7 +93,7 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${currPlayer}`);
+    piece.classList.add(`p${this.currPlayer}`);
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
@@ -104,7 +107,9 @@ class Game {
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
   checkForWin() {
+    console.log('chekforwin this:',this);
     function _win(cells) {
+      console.log('_win this',this);
       // Check four cells to see if they're all color of current player
       //  - cells: list of four (y, x) cells
       //  - returns true if all are legal coordinates & all match currPlayer
@@ -129,7 +134,8 @@ class Game {
         const diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+        // preserve this context for inner function _win
+        if (_win.call(this,horiz) || _win.call(this, vert) || _win.call(this,diagDR) || _win.call(this,diagDL)) {
           return true;
         }
       }
@@ -144,23 +150,23 @@ class Game {
     const x = Number(evt.target.id.slice("top-".length));
 
     // get next spot in column (if none, ignore click)
-    const y = findSpotForCol(x);
+    const y = this.findSpotForCol(x);
     if (y === null) {
       return;
     }
 
     // place piece in board and add to HTML table
-    board[y][x] = this.currPlayer;
-    placeInTable(y, x);
+    this.board[y][x] = this.currPlayer;
+    this.placeInTable(y, x);
 
     // check for win
-    if (checkForWin()) {
-      return endGame(`Player ${this.currPlayer} won!`);
+    if (this.checkForWin()) {
+      return this.endGame(`Player ${this.currPlayer} won!`);
     }
 
     // check for tie: if top row is filled, board is filled
-    if (board[0].every(cell => cell !== null)) {
-      return endGame('Tie!');
+    if (this.board[0].every(cell => cell !== null)) {
+      return this.endGame('Tie!');
     }
 
     // switch players
@@ -177,7 +183,3 @@ class Game {
 }
 
 new Game(6,7);
-
-// const connectFour = new Game(6, 7);
-// connectFour.start();
-//start();?
